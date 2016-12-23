@@ -48,9 +48,9 @@ describe('WolfTextstream', () => {
 
   it('should not accept options when source is a stream.', () => {
     let textData = 'Hello, file content.';
-    let fileName = 'testfile';
+    let fileName = 'testfile01';
 
-    fs.writeFile(fileName, textData);
+    fs.writeFileSync(fileName, textData);
     let fileStream = fs.createReadStream(fileName);
     let fileContent = null;
     (() => {
@@ -59,11 +59,39 @@ describe('WolfTextstream', () => {
     fs.unlink(fileName);
   });
 
-  it('should not accept source anything otherthan a string or readable stream.',
+  it('should accept file descriptor as source.', () => {
+    let textData = 'Text file content';
+    let fileName = 'testfile02';
+
+    fs.writeFileSync(fileName, textData);
+    let fd = fs.openSync(fileName, 'r');
+
+    let stream = new WolfTextstream(fd);
+    let data = stream.read();
+    data = data.toString();
+    data.should.equal(textData);
+    fs.close(fd);
+    fs.unlink(fileName);
+  });
+
+  it('should not accept options when source is a file descriptor.', () => {
+    let textData = 'Text file content';
+    let fileName = 'testfile02';
+
+    fs.writeFileSync(fileName, textData);
+    let fd = fs.openSync(fileName, 'r');
+    (() => {
+        let stream = new WolfTextstream(fd, {});
+    }).should.throw();
+
+    fs.close(fd);
+    fs.unlink(fileName);
+  });
+
+  it('should not accept source anything otherthan a string, number or readable stream.',
     () => {
       (() => {
         let stream = new WolfTextstream({});
       }).should.throw();
   });
-
 });
