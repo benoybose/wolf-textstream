@@ -41,22 +41,28 @@ describe('WolfTextstream', () => {
 
     fs.writeFile(fileName, textData);
     let fileStream = fs.createReadStream(fileName);
-    let fileContent = null;
     let stream = new WolfTextstream(fileStream);
+    stream.on('data', (data) => {
+      data = data.toString();
+      data.should.equal(textData);
+    });
+    stream.isPaused().should.be.false;
     fs.unlink(fileName);
   });
 
-  it('should not accept options when source is a stream.', () => {
-    let textData = 'Hello, file content.';
-    let fileName = 'testfile01';
+  it('should handle a paused stream as source.', () => {
+    let fileContent = 'Hello, stream';
+    var sourceStream = new WolfTextstream(fileContent);
+    assert.equal(sourceStream.isPaused(), true);
+    assert.equal(sourceStream.sourcePaused, true);
 
-    fs.writeFileSync(fileName, textData);
-    let fileStream = fs.createReadStream(fileName);
-    let fileContent = null;
-    (() => {
-      let stream = new WolfTextstream(fileStream, {});
-    }).should.throw();
-    fs.unlink(fileName);
+    var stream = new WolfTextstream(sourceStream);
+    assert.equal(stream.isPaused(), true);
+    assert.equal(stream.sourcePaused, true);
+
+    var data = sourceStream.read();
+    data = data.toString();
+    data.should.equal(fileContent);
   });
 
   it('should accept file descriptor as source.', () => {
@@ -74,21 +80,7 @@ describe('WolfTextstream', () => {
     fs.unlink(fileName);
   });
 
-  it('should not accept options when source is a file descriptor.', () => {
-    let textData = 'Text file content';
-    let fileName = 'testfile02';
-
-    fs.writeFileSync(fileName, textData);
-    let fd = fs.openSync(fileName, 'r');
-    (() => {
-        let stream = new WolfTextstream(fd, {});
-    }).should.throw();
-
-    fs.close(fd);
-    fs.unlink(fileName);
-  });
-
-  it('should not accept source anything otherthan a string, number or readable stream.',
+  it('should not accept source anything otherthan recognized types.',
     () => {
       (() => {
         let stream = new WolfTextstream({});
