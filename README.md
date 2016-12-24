@@ -49,5 +49,5 @@ MIT © [Benoy Bose]()
 [travis-url]: https://travis-ci.org/benoybose/wolf-textstream
 [daviddm-image]: https://david-dm.org/benoybose/wolf-textstream.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/benoybose/wolf-textstream
-[coveralls-image]: https://coveralls.io/repos/benoybose/wolf-textstream/badge.svg
-[coveralls-url]: https://coveralls.io/r/benoybose/wolf-textstream
+[coveralls-image]: https://coveralls.io/repos/github/benoybose/wolf-textstream/badge.svg
+[coveralls-url]: https://coveralls.io/github/benoybose/wolf-textstream
