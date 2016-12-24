@@ -1,6 +1,6 @@
 {
   "name": "wolf-textstream",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A readable stream implementation for string and text files.",
   "homepage": "",
   "author": {
